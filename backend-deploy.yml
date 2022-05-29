@@ -1,0 +1,34 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pizzabackend
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: pizzabackend
+    spec:
+      containers:
+      - name: pizzabackend
+        image: macoratti/pizzabackend:latest
+        ports:
+        - containerPort: 80
+        env:
+        - name: ASPNETCORE_URLS
+          value: http://*:80
+  selector:
+    matchLabels:
+      app: pizzabackend
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: pizzabackend
+spec:
+  type: ClusterIP
+  ports:
+  - port: 80
+  selector:
+    app: pizzabackend

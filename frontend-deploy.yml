@@ -1,0 +1,36 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pizzafrontend
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: pizzafrontend
+    spec:
+      containers:
+      - name: pizzafrontend
+        image: macoratti/pizzafrontend:latest
+        ports:
+        - containerPort: 80
+        env:
+        - name: ASPNETCORE_URLS
+          value: http://*:80
+        - name: backendUrl
+          value: http://pizzabackend
+  selector:
+    matchLabels:
+      app: pizzafrontend
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: pizzafrontend
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 80
+  selector:
+    app: pizzafrontend
